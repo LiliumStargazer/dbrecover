@@ -9,7 +9,7 @@ class FlaskTestCase(unittest.TestCase):
 
     def test_handle_dump_success(self):
         payload = {
-            "db_path": "/Users/alghisi/Desktop/22493/AndBk08/AndBk.s3db",
+            "db_path": "/Users/alghisi/Desktop/22493/AndBk24/AndBk.s3db",
             "db_prod_path": "/Users/alghisi/Desktop/22493/AndBk08/ProdDbTouch.s3db"
         }
         response = self.app.post('/recover', data=json.dumps(payload), content_type='application/json')
