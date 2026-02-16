@@ -1,12 +1,41 @@
-FROM python:3.13.3-alpine3.21
+FROM python:3.14-alpine
+
 WORKDIR /app
-COPY . /app
 
-# Installa sqlite3 e altre dipendenze necessarie utilizzando apk
-RUN apk add --no-cache sqlite
+# System deps:
+# - sqlite: sqlite3 CLI (serve per .recover/.dump)
+# - openssl/libffi: runtime per paramiko/cryptography
+# - build deps: per compilare wheels su alpine quando necessario
+RUN apk add --no-cache \
+    sqlite sqlite-libs \
+    openssl \
+    libffi \
+    && apk add --no-cache --virtual .build-deps \
+    build-base \
+    openssl-dev \
+    libffi-dev \
+    cargo \
+    rust
 
-# Installa le librerie Python necessarie
-RUN pip install --no-cache-dir flask gunicorn
+# Install Poetry (stessa versione che ha generato il lock)
+ENV POETRY_VERSION=2.3.2 \
+    POETRY_VIRTUALENVS_CREATE=false \
+    POETRY_NO_INTERACTION=1
 
-# Comando per avviare l'applicazione
-CMD ["gunicorn", "-w", "4", "-k", "gthread", "-b", "0.0.0.0:5000", "--timeout", "600", "app:app"]
+RUN pip install --no-cache-dir -U pip \
+    && pip install --no-cache-dir "poetry==$POETRY_VERSION"
+
+# Copy only dependency files first (cache friendly)
+COPY pyproject.toml poetry.lock ./
+
+# Install only main deps; do not install the project package itself
+RUN poetry install --no-root --without dev --no-ansi
+
+# Copy app code
+COPY . .
+
+# Remove build deps to shrink image
+RUN apk del .build-deps
+
+# Gunicorn
+CMD ["gunicorn", "-w", "2", "-k", "gthread", "-b", "0.0.0.0:5000", "--timeout", "600", "app:app"]
