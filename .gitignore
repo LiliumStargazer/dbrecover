@@ -1,4 +1,13 @@
-.venv.
-.idea
-.test
-note.txt
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual env
+.venv/
+
+# OS
+.DS_Store
+
+.env
