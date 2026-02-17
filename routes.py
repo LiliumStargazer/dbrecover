@@ -44,7 +44,7 @@ def integrity_check_route():
         db_paths = resolve_db_paths(paths["local"]["unzip_dir"], softwaretype)
         integrity_check(db_paths["logs_db"])
         integrity_check(db_paths["products_db"])
-        return jsonify({"result": 0}), 200
+        return jsonify({"success": True}), 200
 
     except AppError as e:
         return to_http_response(e)
@@ -108,7 +108,7 @@ def recover_route():
         )
         sftp.close()
 
-        return jsonify({"result": 0}), 200
+        return jsonify({"success": True}), 200
 
     except AppError as e:
         return to_http_response(e)
