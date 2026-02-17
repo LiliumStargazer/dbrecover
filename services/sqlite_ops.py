@@ -53,7 +53,9 @@ def recover(db_original_path: str, db_recovered_path: str) -> None:
     target_db = db_recovered_path
 
     if same_target:
-        fd, tmp_db = tempfile.mkstemp(suffix=".s3db")
+        target_dir = os.path.dirname(db_recovered_path)
+        os.makedirs(target_dir, exist_ok=True)  # per sicurezza
+        fd, tmp_db = tempfile.mkstemp(dir=target_dir, suffix=".s3db")
         os.close(fd)
         target_db = tmp_db
 
