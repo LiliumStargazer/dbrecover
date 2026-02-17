@@ -61,8 +61,8 @@ def recover_route():
     if not data:
         return to_http_response(bad_request("Dati JSON non forniti"))
 
-    source_serial = data.get("sourceSerial")
-    source_backup = data.get("sourceBackup")
+    source_serial = data.get("serial")
+    source_backup = data.get("backup")
 
     try:
         source_basepath = build_base_paths(source_serial)

@@ -38,4 +38,4 @@ COPY . .
 RUN apk del .build-deps
 
 # Gunicorn
-CMD ["gunicorn", "-w", "2", "-k", "gthread", "-b", "0.0.0.0:5000", "--timeout", "600", "app:app"]
+CMD ["gunicorn", "-w", "2", "-k", "gthread", "-b", "0.0.0.0:5000", "--timeout", "600", "app:create_app()"]
