@@ -37,7 +37,7 @@ def integrity_check_route():
         basepath = build_base_paths(serial)
         paths = build_backup_paths(basepath, backup)
         sftp = connect_sftp()
-        sftp.download(paths["ftp"]["zip"], paths["local"]["unzip_dir"])
+        sftp.download(paths["ftp"]["zip"], paths["local"]["zip"])
         sftp.close()
         unzip_backup(paths["local"]["zip"], paths["local"]["unzip_dir"])
         softwaretype = detect_software_type(paths["local"]["unzip_dir"])
