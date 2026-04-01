@@ -11,5 +11,7 @@
   },
   "ruff.enable": true,
   "ruff.fixOnSave": true,
-  "workbench.editor.enablePreview": false
+  "workbench.editor.enablePreview": false,
+  "python-envs.defaultEnvManager": "ms-python.python:poetry",
+  "python-envs.defaultPackageManager": "ms-python.python:poetry"
 }

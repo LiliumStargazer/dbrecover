@@ -1,7 +1,6 @@
-# dbrecover/app.py  (SOLUZIONE A: Blueprint)
 from flask import Flask
 from dotenv import load_dotenv
-from routes import bp
+from services.dbrecover.routes import bp
 
 load_dotenv()
 
