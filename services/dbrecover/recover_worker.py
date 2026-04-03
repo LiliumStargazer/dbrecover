@@ -32,8 +32,8 @@ def run_recover_job(job_id: str, serial: str, backup: str):
 
         local_zip = os.path.join(work_dir, "backup.zip")
         unzip_dir = os.path.join(work_dir, "unzipped")
-        recovered_db = os.path.join(work_dir, "recovered.db")
-        recovered_products_db = os.path.join(work_dir, "products.db")
+        # recovered_db = os.path.join(work_dir, "recovered.db")
+        # recovered_products_db = os.path.join(work_dir, "products.db")
         recovered_zip = os.path.join(work_dir, "recovered.zip")
 
         os.makedirs(unzip_dir, exist_ok=True)
@@ -51,22 +51,24 @@ def run_recover_job(job_id: str, serial: str, backup: str):
         db_paths = resolve_db_paths(unzip_dir, softwaretype)
 
         update_job(job_id, step="recovering_logs_db", progress=55)
-        recover(db_paths["logs_db"], recovered_db)
+        recover(db_paths["logs_db"], db_paths["recovery_db"])
 
         update_job(job_id, step="checking_recovered_logs_db", progress=65)
-        integrity_check(recovered_db)
+        integrity_check(db_paths["recovery_db"])
 
         update_job(job_id, step="optimizing_recovered_logs_db", progress=72)
-        clean_and_optimize_database(recovered_db)
+        clean_and_optimize_database(db_paths["recovery_db"])
 
         update_job(job_id, step="recovering_products_db", progress=80)
-        recover(db_paths["products_db"], recovered_products_db)
+        recover(db_paths["products_db"], db_paths["products_db"])
 
         update_job(job_id, step="checking_products_db", progress=88)
-        integrity_check(recovered_products_db)
+        integrity_check(db_paths["products_db"])
 
         update_job(job_id, step="creating_zip", progress=93)
-        create_zip_file([recovered_db, recovered_products_db], recovered_zip)
+        create_zip_file(
+            [db_paths["recovery_db"], db_paths["products_db"]], recovered_zip
+        )
 
         update_job(job_id, step="uploading_zip", progress=97)
         sftp = connect_sftp()
